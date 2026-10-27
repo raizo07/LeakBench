@@ -37,6 +37,11 @@ is the difference between a disqualifying leak and a residual cost of using the 
 
 ![Compare view](docs/screenshot-compare.png)
 
+The UI is responsive down to a 390px viewport: the pool map and tables scroll inside their own
+containers rather than widening the page, and the tab strip scrolls horizontally.
+
+<img src="docs/screenshot-mobile.png" alt="Findings view at 390px" width="320">
+
 ---
 
 ## Quickstart
