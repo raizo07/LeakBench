@@ -8,6 +8,31 @@ on:
   pull_request:
 
 jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: web
+
+      - name: typecheck and build
+        run: pnpm build
+        working-directory: web
+
+      # Pages serves the committed artifact, so a stale build would ship stale
+      # UI. The build is deterministic, which makes this check meaningful.
+      - name: web/dist must match the sources
+        run: git diff --exit-code -- web/dist/index.html
+
   leakbench:
     runs-on: ubuntu-latest
     steps:
