@@ -1,0 +1,39 @@
+name: pages
+
+# Publishes the report UI at https://raizo07.github.io/LeakBench/
+#
+# `web/dist` is committed as a single self-contained index.html, so this job
+# uploads an artifact rather than building: no pnpm step, no cache, no Node
+# version to drift. If the UI ever needs a build step, add it before the upload.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/dist/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
