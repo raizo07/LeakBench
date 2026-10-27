@@ -131,7 +131,7 @@ export default function App() {
           </ol>
 
           <div className="rail-foot">
-            <a href="https://github.com/example/leakbench" target="_blank" rel="noreferrer">
+            <a href="https://github.com/raizo07/LeakBench" target="_blank" rel="noreferrer">
               source
             </a>
             <a href="api/index.json" target="_blank" rel="noreferrer">
