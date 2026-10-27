@@ -1,0 +1,46 @@
+{
+  "reports": [
+    {
+      "by_severity": {
+        "critical": 2,
+        "high": 7,
+        "info": 0,
+        "low": 3,
+        "medium": 12
+      },
+      "description": "A wallet that moved its whole Orchard balance across the turnstile in one transaction, one block after being paid, then unshielded to an exchange.",
+      "fatal": 2,
+      "file": "naive.json",
+      "findings": 24,
+      "generated_at": "2026-10-27T09:13:08Z",
+      "grade": "F",
+      "id": "naive",
+      "kind": "scenario",
+      "label": "naive wallet",
+      "score": 0,
+      "tx_count": 7,
+      "verdict": "disqualified"
+    },
+    {
+      "by_severity": {
+        "critical": 0,
+        "high": 0,
+        "info": 0,
+        "low": 0,
+        "medium": 5
+      },
+      "description": "The same starting position, migrated as five non-round chunks during busy windows, with conventional fees and no transparent legs.",
+      "fatal": 0,
+      "file": "hardened.json",
+      "findings": 5,
+      "generated_at": "2026-10-27T09:13:08Z",
+      "grade": "B",
+      "id": "hardened",
+      "kind": "scenario",
+      "label": "hardened wallet",
+      "score": 79,
+      "tx_count": 13,
+      "verdict": "acceptable"
+    }
+  ]
+}

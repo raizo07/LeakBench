@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/leakbench-core",
+    "crates/leakbench-sim",
+    "crates/leakbench-chain",
+    "crates/leakbench-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+license = "MIT"
+repository = "https://github.com/example/leakbench"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+tiny_http = "0.12"
+leakbench-core = { path = "crates/leakbench-core" }
+leakbench-sim = { path = "crates/leakbench-sim" }
+leakbench-chain = { path = "crates/leakbench-chain" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

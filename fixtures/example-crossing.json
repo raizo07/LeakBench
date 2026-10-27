@@ -1,0 +1,48 @@
+{
+  "label": "orchard -> ironwood crossing",
+  "kind": "transaction",
+  "network": "main",
+  "description": "the migration transaction from block 3,500,041: a full balance, round amount, stale anchor",
+  "context": { "block_interval_secs": 75, "tip_height": 3500171 },
+  "txs": [
+    {
+      "txid": "30cc9acb8b1b2c500ef5754112486810bc7e74bb7e94d2bd6b64019bb22d1d59",
+      "version": 6,
+      "block_height": 3500041,
+      "block_time": 1790556600,
+      "fee_zat": 10000,
+      "transparent": { "spends": 0, "outputs": 0 },
+      "sapling": {},
+      "orchard": { "spends": 2, "outputs": 0, "value_balance_zat": 500000000 },
+      "ironwood": { "spends": 0, "outputs": 1, "value_balance_zat": -500000000 },
+      "anchor_age_blocks": 130,
+      "label": "migrate full balance",
+      "source": "manual"
+    }
+  ],
+  "wallet": {
+    "label": "example wallet",
+    "network": "main",
+    "birthday_height": 3480000,
+    "notes": [
+      {
+        "txid": "30cc9acb8b1b2c500ef5754112486810bc7e74bb7e94d2bd6b64019bb22d1d59",
+        "pool": "orchard",
+        "value_zat": 340000000,
+        "received_height": 3500000,
+        "memo_len": 512,
+        "is_change": false
+      },
+      {
+        "txid": "30cc9acb8b1b2c500ef5754112486810bc7e74bb7e94d2bd6b64019bb22d1d59",
+        "pool": "orchard",
+        "value_zat": 160000000,
+        "received_height": 3500040,
+        "memo_len": 512,
+        "is_change": false
+      }
+    ],
+    "addresses": []
+  },
+  "peers": []
+}

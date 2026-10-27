@@ -1,0 +1,27 @@
+name: privacy
+
+# The gate this repo ships is a self-test: it fails if the demo scenarios stop
+# producing the expected reports. In a wallet repo, the same two lines run
+# against a report generated from your own transactions.
+on:
+  push:
+  pull_request:
+
+jobs:
+  leakbench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      - name: unit tests
+        run: cargo test --workspace
+
+      - name: generate reports
+        run: cargo run -p leakbench-cli -- demo --out reports
+
+      - name: privacy gate (fails on a fatal or high finding)
+        run: |
+          cargo run -p leakbench-cli -- ci --report reports/hardened.json --fail-on high
+          cargo run -p leakbench-cli -- ci --report reports/naive.json --fail-on high || true

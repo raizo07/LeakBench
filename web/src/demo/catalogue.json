@@ -1,0 +1,77 @@
+[
+  {
+    "description": "Cross-pool shielded movement reveals the exact migrated amount through public value balances.",
+    "id": "LB-001",
+    "title": "Turnstile amount disclosure"
+  },
+  {
+    "description": "A pool crossing is only anonymous if enough other users cross in the same window.",
+    "id": "LB-002",
+    "title": "Turnstile timing anonymity set"
+  },
+  {
+    "description": "Shielded value that enters or leaves the transparent pool publishes its amount.",
+    "id": "LB-003",
+    "title": "Transparent leg"
+  },
+  {
+    "description": "A fee that deviates from the ZIP 317 conventional fee identifies the wallet software.",
+    "id": "LB-004",
+    "title": "Fee fingerprint"
+  },
+  {
+    "description": "Bundle action counts reveal how many notes were spent and how many recipients there were.",
+    "id": "LB-005",
+    "title": "Action-count disclosure"
+  },
+  {
+    "description": "How far behind the tip the spend anchor is fingerprints the wallet's sync cadence.",
+    "id": "LB-006",
+    "title": "Anchor staleness"
+  },
+  {
+    "description": "Several transactions inside a few blocks are trivially groupable by an observer.",
+    "id": "LB-007",
+    "title": "Temporal clustering"
+  },
+  {
+    "description": "A reused transparent address links every transaction that touched it.",
+    "id": "LB-008",
+    "title": "Transparent address reuse"
+  },
+  {
+    "description": "Publicly revealed whole-ZEC amounts are rare and therefore identifying.",
+    "id": "LB-009",
+    "title": "Round-number amounts"
+  },
+  {
+    "description": "Setting nExpiryHeight where other wallets do not narrows the anonymity set.",
+    "id": "LB-010",
+    "title": "Expiry-height fingerprint"
+  },
+  {
+    "description": "Version 4 transactions become invalid at NU7 and are a historical fingerprint.",
+    "id": "LB-011",
+    "title": "Legacy transaction version"
+  },
+  {
+    "description": "Varying memo lengths across a wallet's notes reveal message classes and software.",
+    "id": "LB-012",
+    "title": "Memo-length fingerprint"
+  },
+  {
+    "description": "A note whose value nobody else holds is identifiable by amount alone.",
+    "id": "LB-013",
+    "title": "Unique note value"
+  },
+  {
+    "description": "Holding notes across three or more pools maps the wallet's migration history.",
+    "id": "LB-014",
+    "title": "Pool fragmentation"
+  },
+  {
+    "description": "Migrating an entire balance in one crossing ties the new account to the whole old one.",
+    "id": "LB-015",
+    "title": "Full-balance migration"
+  }
+]

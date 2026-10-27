@@ -1,0 +1,8 @@
+/target
+/.cargo
+/zebrad.toml
+reports/
+web/node_modules/
+web/dist/assets/
+web/.chrome*/
+web/shot*.png

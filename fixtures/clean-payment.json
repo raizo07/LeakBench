@@ -1,0 +1,24 @@
+{
+  "label": "clean ironwood payment",
+  "kind": "transaction",
+  "network": "main",
+  "description": "a 2-in/2-out shielded payment at the ZIP 317 conventional fee, no pool crossing",
+  "context": { "block_interval_secs": 75, "tip_height": 3500171 },
+  "txs": [
+    {
+      "txid": "6f1d2c4a9b8e7d5c3a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a39281706f5",
+      "version": 6,
+      "block_height": 3500100,
+      "block_time": 1790561025,
+      "fee_zat": 20000,
+      "transparent": { "spends": 0, "outputs": 0 },
+      "sapling": {},
+      "orchard": {},
+      "ironwood": { "spends": 2, "outputs": 2, "value_balance_zat": 20000 },
+      "anchor_age_blocks": 1,
+      "label": "shielded payment",
+      "source": "manual"
+    }
+  ],
+  "peers": []
+}

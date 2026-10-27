@@ -1,0 +1,12 @@
+[package]
+name = "leakbench-core"
+description = "Privacy leak model, fact schema and heuristic engine for Zcash (no I/O, no chain dependencies)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

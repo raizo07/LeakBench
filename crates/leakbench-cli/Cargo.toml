@@ -1,0 +1,21 @@
+[package]
+name = "leakbench-cli"
+description = "LeakBench command line: scan, simulate, serve, ci"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "leakbench"
+path = "src/main.rs"
+
+[dependencies]
+leakbench-core = { workspace = true }
+leakbench-sim = { workspace = true }
+leakbench-chain = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+tiny_http = { workspace = true }
