@@ -73,8 +73,8 @@ pub fn naive() -> Scenario {
     // The mistake: move everything, one block later, in one crossing.
     txs.push(TxFacts {
         fee_zat: Some(10_000),
-        orchard: shielded(2, 0, 5 * ZEC),
-        ironwood: shielded(0, 1, -5 * ZEC),
+        orchard: shielded(2, 2, 5 * ZEC),
+        ironwood: shielded(1, 1, -5 * ZEC),
         label: Some("migrate full balance".into()),
         anchor_age_blocks: Some(130),
         ..tx("migrate-all", h + 41, &mut rng)
@@ -83,7 +83,7 @@ pub fn naive() -> Scenario {
     // A payment from the new pool, at a fee the wallet hard-coded.
     txs.push(TxFacts {
         fee_zat: Some(10_000),
-        ironwood: shielded(1, 2, 10_000),
+        ironwood: shielded(2, 2, 10_000),
         expiry_height: Some(h + 41 + 40),
         label: Some("merchant invoice #114".into()),
         anchor_age_blocks: Some(1),
@@ -93,8 +93,8 @@ pub fn naive() -> Scenario {
     // Unshielding to an exchange deposit address: amount, address, timing public.
     const DEPOSIT: &str = "t1UnExChangeDepositAddr9kQ";
     txs.push(TxFacts {
-        fee_zat: Some(10_000),
-        ironwood: shielded(1, 0, ZEC + 10_000),
+        fee_zat: Some(15_000),
+        ironwood: shielded(1, 1, ZEC + 15_000),
         transparent: PoolFacts {
             spends: 0,
             outputs: 1,
@@ -174,7 +174,7 @@ pub fn naive() -> Scenario {
         peers.push(PeerSummary {
             txid: format!("peer-naive-{i}"),
             height: h + 38 + i as u64,
-            shape: "t0/0 s0/0 o1/0 i0/1".into(),
+            shape: "t0/0 s0/0 o1/1 i1/1".into(),
             amount_zat: Some(*amount),
             kind: Some("migration".into()),
         });
@@ -241,9 +241,9 @@ pub fn hardened() -> Scenario {
     let mut peers = Vec::with_capacity(48);
     for (i, (offset, value)) in crossings.iter().enumerate() {
         txs.push(TxFacts {
-            fee_zat: Some(10_000),
-            orchard: shielded(1, 0, *value),
-            ironwood: shielded(0, 1, -*value),
+            fee_zat: Some(20_000),
+            orchard: shielded(1, 1, *value),
+            ironwood: shielded(1, 1, -*value),
             label: Some(format!("crossing {}", i + 1)),
             anchor_age_blocks: Some(0),
             ..tx(&format!("crossing-{i}"), h + *offset, &mut rng)
@@ -254,7 +254,7 @@ pub fn hardened() -> Scenario {
             peers.push(PeerSummary {
                 txid: format!("peer-hard-{i}-{k}"),
                 height: h + *offset + (k as u64),
-                shape: "t0/0 s0/0 o1/0 i0/1".into(),
+                shape: "t0/0 s0/0 o1/1 i1/1".into(),
                 amount_zat: Some(value * jitter / 100),
                 kind: Some("migration".into()),
             });
@@ -282,8 +282,8 @@ pub fn hardened() -> Scenario {
     .enumerate()
     {
         txs.push(TxFacts {
-            fee_zat: Some(15_000),
-            ironwood: shielded(1, 2, *value - 15_000),
+            fee_zat: Some(20_000),
+            ironwood: shielded(2, 2, *value - 20_000),
             label: Some(format!("merchant invoice #{}", 900 + i)),
             anchor_age_blocks: Some(1),
             ..tx(&format!("invoice-{i}"), h + *offset, &mut rng)

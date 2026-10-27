@@ -29,12 +29,15 @@ pub fn score_findings(findings: &[Finding]) -> Score {
         let occurrence = seen.entry(f.id.as_str()).or_insert(0);
         *occurrence += 1;
         let damping = 1.0 / (1.0 + 0.7 * (*occurrence as f32 - 1.0));
-        let base = if f.fatal {
-            FATAL_PENALTY
+        // A fatal disclosure costs the same whether we are certain or not: the
+        // policy is "leaks are disqualifying", not "leaks are disqualifying with
+        // probability p". Scaling the fatal penalty by confidence had a perverse
+        // effect — gathering better evidence *lowered* the score.
+        risk += if f.fatal {
+            FATAL_PENALTY * damping
         } else {
-            f.severity.weight() as f32
+            f.severity.weight() as f32 * f.confidence.factor() * damping
         };
-        risk += base * f.confidence.factor() * damping;
     }
 
     let value = (100.0 - risk).clamp(0.0, 100.0).round() as u32;
@@ -113,6 +116,19 @@ mod tests {
         assert!(one.value > many.value);
         // four repeats must not cost four times as much
         assert!(many.value > one.value - 4 * 8);
+    }
+
+    #[test]
+    fn better_evidence_never_costs_more_for_a_fatal_finding() {
+        let mut low = finding("LB-001", Severity::Critical, true);
+        let high = finding("LB-001", Severity::Critical, true);
+        low.confidence = Confidence::Low;
+        let a = score_findings(&[low]);
+        let b = score_findings(&[high]);
+        assert_eq!(
+            a.value, b.value,
+            "fatal impact must not depend on confidence"
+        );
     }
 
     #[test]

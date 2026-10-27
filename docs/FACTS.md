@@ -26,8 +26,8 @@ leakbench scan --fixture crossing.json
       "fee_zat": 10000,
       "transparent": { "spends": 0, "outputs": 0 },
       "sapling": {},
-      "orchard":  { "spends": 2, "outputs": 0, "value_balance_zat": 500000000 },
-      "ironwood": { "spends": 0, "outputs": 1, "value_balance_zat": -500000000 },
+      "orchard":  { "spends": 2, "outputs": 2, "value_balance_zat": 500000000 },
+      "ironwood": { "spends": 1, "outputs": 1, "value_balance_zat": -500000000 },
       "anchor_age_blocks": 130,
       "source": "manual"
     }
@@ -101,6 +101,17 @@ number produces a confident false finding.
 }
 ```
 
+The fastest way to build this file is CSV, which any wallet debug screen can produce:
+
+```bash
+leakbench wallet import --notes notes.csv --addresses addresses.csv --out wallet.json
+```
+
+```
+notes.csv      txid,pool,value_zat,received_height[,memo_len,is_change]
+addresses.csv  address,uses,first_height,last_height
+```
+
 Wallet facts are the only place LeakBench learns something an observer could not: which notes are
 yours, which addresses you reused, and what your memos look like. Keep the file local. Reports
 contain txids and amounts, never keys.
@@ -114,8 +125,16 @@ contain txids and amounts, never keys.
 ]
 ```
 
-Peers are what turn "an amount is public" into "an amount is identifiable". Supply them from a block
-range, an indexer, or the simulator. Without them, LB-002 and LB-013 report lower confidence and
+Peers are what turn "an amount is public" into "an amount is identifiable". The shipped way to get
+them is a block range on your own node:
+
+```bash
+leakbench peers --rpc http://127.0.0.1:18232 --from 3500000 --to 3500100 --out peers.json
+leakbench scan --fixture crossing.json --peers peers.json
+```
+
+`peers.json` is `{schema, network, from_height, to_height, block_interval_secs, peers[]}`, and
+`scan --peers` also accepts a bare array. You can hand-write it, or feed it from an indexer. Without them, LB-002 and LB-013 report lower confidence and
 LB-001 treats every crossing as identifying — conservative on purpose.
 
 ## Producing facts from a node

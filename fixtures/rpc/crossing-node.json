@@ -1,0 +1,14 @@
+{
+  "_comment": "Node-shaped output of `getrawtransaction <txid> 1`, the same transaction as fixtures/example-crossing.json. Committed so the RPC path and the fixture path are tested against each other.",
+  "txid": "30cc9acb8b1b2c500ef5754112486810bc7e74bb7e94d2bd6b64019bb22d1d59",
+  "version": 6,
+  "locktime": 0,
+  "expiryheight": 0,
+  "vin": [],
+  "vout": [],
+  "orchard": { "actions": [{}, {}], "valueBalanceZat": 500000000 },
+  "ironwood": { "actions": [{}], "valueBalanceZat": -500000000 },
+  "fee": 0.0001,
+  "height": 3500041,
+  "blocktime": 1790556600
+}

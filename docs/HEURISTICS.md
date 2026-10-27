@@ -50,6 +50,8 @@ is a crossing with an anonymity set of one, no matter how carefully the amount w
 
 **Rating.** `high` for 0–1 peers, `medium` for 2–4, silent at 5+. `confidence: low` when no peer
 sample was supplied — at that point the rule says the set is *unmeasured* instead of pretending.
+A sample comes from `leakbench peers --rpc … --from … --to …`, which records every transaction in
+the window with its shape and visible amount.
 
 **False positives.** Busy windows make everything look safe: if 200 users cross in the same hour,
 that is genuinely better for you. The rule does not try to detect wash crossings.
@@ -103,20 +105,21 @@ report.
 
 ## LB-005 · Action-count disclosure — `fingerprint`
 
-**Observable.** Per-bundle spend/output counts, and total logical actions.
+**Observable.** The number of actions in each shielded bundle.
 
-**Why it leaks.** Counts are public. Three spends in one bundle says "this wallet held at least three
-notes and consumed them together". A 1-in/1-out shape usually means a whole note was spent at once.
+**Why it leaks.** In the Orchard protocol every action spends one note and creates one output, so
+`spends == outputs` by construction and the meaningful public number is the action count: a
+five-action bundle says "this wallet held at least five notes and consumed them together". Padding
+to two actions is what makes ordinary transfers look alike.
 
-**Rating.** `medium` for more than two spends in a bundle; `low` for a minimal 1-in/1-out transfer.
-Crossings are skipped here because LB-001 already covers them and 1-in/1-out is the normal crossing
-shape.
+**Rating.** `medium` for more than two actions in a bundle. Crossings are skipped: their minimal
+1-action shape is normal, and LB-001 already covers them.
 
-**False positives.** Padding to 2-in/2-out costs block space; the rule does not model the cost, only
-the disclosure.
+**False positives.** Consolidation is legitimate housekeeping. The finding is still true; the fix is
+about *where* you do it, not whether.
 
-**Fix.** Pad to ordinary shapes: 2/2 when change is needed, 1/2 otherwise. Consolidate notes in a
-transaction that is not adjacent to an identifying payment.
+**Fix.** Consolidate in a dedicated transaction, well separated from an identifying payment, and pad
+to the ordinary 2-action shape.
 
 **Refs.** [ZIP 225](https://zips.z.cash/zip-0225)
 
@@ -242,7 +245,7 @@ deployed, so 512 bytes per output remains the ceiling.
 Chunking a balance into irregular amounts can create exactly this problem while solving another one.
 
 **Rating.** `high` at zero peers, `medium` at one or two. Skipped entirely without a peer sample,
-because an unmeasured histogram cannot support the claim.
+because an unmeasured histogram cannot support the claim. The sample is the same one LB-002 uses.
 
 **Fix.** Break unique denominations: split into a small set of common denominations, or receive into
 an account whose value histogram resembles everyone else's.

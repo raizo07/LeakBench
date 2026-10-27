@@ -3,7 +3,8 @@
 
 use std::io::IsTerminal;
 
-use leakbench_core::{Report, Severity};
+use leakbench_chain::peers::{self, PeerSet};
+use leakbench_core::{Confidence, Report, ReportDiff, Severity};
 
 fn color(code: &str, text: &str) -> String {
     if std::io::stdout().is_terminal() {
@@ -182,5 +183,154 @@ fn wrap(text: &str, width: usize, indent: usize) -> String {
         out.push_str(word);
         line += word.len();
     }
+    out
+}
+
+pub fn render_peers(set: &PeerSet) -> String {
+    let mut out = String::new();
+    out.push_str(&format!(
+        "\n  {} blocks {}–{} · {}\n\n",
+        color("1;97;44", " PEERS "),
+        set.from_height,
+        set.to_height,
+        set.network
+    ));
+    for line in peers::describe(set).lines() {
+        out.push_str(&format!("  {line}\n"));
+    }
+    out
+}
+
+fn fmt_sev(severity: Option<Severity>) -> &'static str {
+    severity.map(Severity::as_str).unwrap_or("—")
+}
+
+fn fmt_conf(confidence: Option<Confidence>) -> &'static str {
+    confidence.map(Confidence::as_str).unwrap_or("—")
+}
+
+pub fn render_diff(d: &ReportDiff) -> String {
+    let mut out = String::new();
+    out.push_str(&format!(
+        "\n  {} {} → {}\n\n",
+        color("1;97;44", " DIFF "),
+        d.before.label,
+        d.after.label
+    ));
+
+    let signed = |v: i32| {
+        if v > 0 {
+            format!("+{v}")
+        } else {
+            format!("{v}")
+        }
+    };
+    let tone = if d.is_regression() {
+        "1;31"
+    } else if d.score_delta > 0 {
+        "1;32"
+    } else {
+        "1;90"
+    };
+    out.push_str(&format!(
+        "  score    {} → {}   {}\n",
+        d.before.score,
+        d.after.score,
+        color(tone, &signed(d.score_delta))
+    ));
+    out.push_str(&format!(
+        "  verdict  {} → {}{}\n",
+        d.before.verdict.as_str(),
+        d.after.verdict.as_str(),
+        if d.verdict_changed {
+            color("1;33", "  (changed)")
+        } else {
+            String::new()
+        }
+    ));
+    out.push_str(&format!(
+        "  fatal    {} → {}\n",
+        d.before.fatal, d.after.fatal
+    ));
+    let risk_sign = if d.risk_delta > 0.0 {
+        format!("+{:.1}", d.risk_delta)
+    } else {
+        format!("{:.1}", d.risk_delta)
+    };
+    out.push_str(&format!(
+        "  risk     {:.1} → {:.1}   {}\n",
+        d.before.risk_points,
+        d.after.risk_points,
+        color(if d.risk_delta > 0.0 { "1;31" } else { "90" }, &risk_sign)
+    ));
+
+    if d.is_noop() {
+        out.push_str(&format!("\n  {}\n\n", color("90", "No structural change.")));
+        return out;
+    }
+
+    for (label, items, tint) in [
+        ("resolved", &d.resolved, "32"),
+        ("added", &d.added, "31"),
+        ("changed", &d.changed, "33"),
+    ] {
+        if items.is_empty() {
+            continue;
+        }
+        out.push_str(&format!(
+            "\n  {} {}\n",
+            color("1", &label.to_uppercase()),
+            color("90", &format!("({})", items.len()))
+        ));
+        for f in items {
+            let mut line = format!("    {:<8} {} → {}   {}", f.id, f.before, f.after, f.title);
+            // An added or resolved rule has one severity, not a transition.
+            let one_sided = if f.before == 0 {
+                Some(fmt_sev(f.severity_after))
+            } else if f.after == 0 {
+                Some(fmt_sev(f.severity_before))
+            } else {
+                None
+            };
+            match one_sided {
+                Some(severity) => line.push_str(&format!("  [{severity}]")),
+                None => {
+                    if f.severity_before != f.severity_after {
+                        line.push_str(&format!(
+                            "  [{} → {}]",
+                            fmt_sev(f.severity_before),
+                            fmt_sev(f.severity_after)
+                        ));
+                    }
+                    if f.confidence_before != f.confidence_after {
+                        line.push_str(&format!(
+                            "  (confidence {} → {})",
+                            fmt_conf(f.confidence_before),
+                            fmt_conf(f.confidence_after)
+                        ));
+                    }
+                }
+            }
+            out.push_str(&format!("{}\n", color(tint, &line)));
+        }
+    }
+
+    let footer = if !d.is_regression() {
+        color("1;32", "no regression")
+    } else if d.score_delta < 0 {
+        color(
+            "1;31",
+            &format!("regression: {} point(s) lost", d.points_lost()),
+        )
+    } else {
+        color(
+            "1;31",
+            &format!(
+                "regression: risk {:+.1} with the score already at its floor",
+                d.risk_delta
+            ),
+        )
+    };
+    out.push_str(&format!("\n  {footer}\n\n"));
     out
 }

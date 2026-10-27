@@ -23,7 +23,7 @@ fn naive_scenario_is_pinned() {
     assert_eq!(report.verdict, Verdict::Disqualified);
     assert_eq!(report.score.value, 0);
     assert_eq!(report.score.grade, "F");
-    assert_eq!(report.findings.len(), 24);
+    assert_eq!(report.findings.len(), 23);
 
     let fatal: Vec<&str> = report
         .findings
@@ -38,7 +38,6 @@ fn naive_scenario_is_pinned() {
         ("LB-002", 1),
         ("LB-003", 1),
         ("LB-004", 4),
-        ("LB-005", 1),
         ("LB-006", 1),
         ("LB-007", 1),
         ("LB-008", 1),
@@ -55,8 +54,10 @@ fn naive_scenario_is_pinned() {
     .collect();
     assert_eq!(counts(&report), expected);
 
-    // Every one of the fifteen rules has something to say about this wallet.
-    assert_eq!(counts(&report).len(), 15);
+    // Fourteen of the fifteen rules fire. LB-005 (action-count disclosure) does
+    // not: neither demo wallet ever consolidates more than two notes at once.
+    assert_eq!(counts(&report).len(), 14);
+    assert!(!report.findings.iter().any(|f| f.id == "LB-005"));
 }
 
 #[test]

@@ -141,14 +141,39 @@ fn header(mime: &str) -> Header {
 }
 
 fn cors(response: Response<std::io::Cursor<Vec<u8>>>) -> Response<std::io::Cursor<Vec<u8>>> {
-    response.with_header(
-        Header::from_bytes(&b"Access-Control-Allow-Origin"[..], &b"*"[..]).expect("static header"),
-    )
+    response
+        .with_header(
+            Header::from_bytes(&b"Access-Control-Allow-Origin"[..], &b"*"[..])
+                .expect("static header"),
+        )
+        .with_header(
+            Header::from_bytes(&b"X-Content-Type-Options"[..], &b"nosniff"[..])
+                .expect("static header"),
+        )
+        .with_header(
+            Header::from_bytes(&b"Referrer-Policy"[..], &b"no-referrer"[..])
+                .expect("static header"),
+        )
 }
+
+/// The report page is a static document with one inline bundle; lock it down.
+const CSP: &str = "default-src 'self'; script-src 'self' 'unsafe-inline'; \
+                   style-src 'self' 'unsafe-inline'; img-src 'self' data:; \
+                   connect-src 'self'; base-uri 'none'; form-action 'none'";
 
 fn serve_file(path: &Path, name: &str) -> Response<std::io::Cursor<Vec<u8>>> {
     match std::fs::read(path) {
-        Ok(bytes) => cors(Response::from_data(bytes).with_header(header(mime_for(name)))),
+        Ok(bytes) => {
+            let response = cors(Response::from_data(bytes).with_header(header(mime_for(name))));
+            if mime_for(name).starts_with("text/html") {
+                response.with_header(
+                    Header::from_bytes(&b"Content-Security-Policy"[..], CSP.as_bytes())
+                        .expect("static header"),
+                )
+            } else {
+                response
+            }
+        }
         Err(_) => not_found(&format!(
             "{} not found — run `pnpm --dir web build` first",
             path.display()

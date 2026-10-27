@@ -7,7 +7,8 @@ echo "▸ building"
 cargo build --release -q
 
 echo "▸ generating reports (reports/ + web/src/demo/)"
-cargo run --release -q -p leakbench-cli -- demo --out reports --web web/src/demo
+cargo run --release -q -p leakbench-cli -- demo --out reports --web web/src/demo \
+  --as-of 2026-10-27T00:00:00Z
 
 if [ ! -f web/dist/index.html ]; then
   echo

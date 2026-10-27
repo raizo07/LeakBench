@@ -7,6 +7,7 @@
 //! assert_eq!(report.schema, "leakbench.report.v1");
 //! ```
 
+pub mod diff;
 pub mod engine;
 pub mod facts;
 pub mod heuristics;
@@ -14,7 +15,8 @@ pub mod model;
 pub mod score;
 pub mod time;
 
-pub use engine::{analyze, describe, VERSION};
+pub use diff::{diff, ReportDiff};
+pub use engine::{analyze, analyze_at, describe, VERSION};
 pub use facts::{
     format_height, format_zat, format_zec, AddressFacts, ChainContext, NoteFacts, PeerSummary,
     Pool, PoolFacts, Source, Subject, SubjectKind, TxFacts, WalletFacts,

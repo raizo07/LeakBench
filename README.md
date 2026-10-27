@@ -2,6 +2,10 @@
 
 **A leak oracle for Zcash.** Facts in, findings out.
 
+[![privacy](https://github.com/raizo07/LeakBench/actions/workflows/privacy.yml/badge.svg)](https://github.com/raizo07/LeakBench/actions/workflows/privacy.yml)
+[![pages](https://github.com/raizo07/LeakBench/actions/workflows/pages.yml/badge.svg)](https://github.com/raizo07/LeakBench/actions/workflows/pages.yml)
+[![demo](https://img.shields.io/badge/live%20demo-raizo07.github.io%2FLeakBench-35d6a4)](https://raizo07.github.io/LeakBench/)
+
 Shielded pools hide the sender, the recipient and the amount *inside* the pool. They do not hide
 the edges. Every crossing between pools publishes an amount through `valueBalance`, every fee is a
 software fingerprint, every cluster of activity in a handful of blocks is a group, and every
@@ -73,6 +77,74 @@ Scan from a local node:
 cargo run -p leakbench-cli -- doctor --rpc http://127.0.0.1:18232
 cargo run -p leakbench-cli -- scan --rpc http://127.0.0.1:18232 --txid <txid>
 ```
+
+## Commands
+
+| command | what it does |
+|---------|--------------|
+| `demo` | run both built-in scenarios, write reports and the UI bundle |
+| `simulate --scenario naive\|hardened` | one scenario, to the terminal |
+| `scan --fixture F \| --decoded F \| --rpc U --txid T` | analyze a transaction or wallet fact bundle |
+| `peers --rpc U --from H --to H` | sample an anonymity set from a block range |
+| `diff BEFORE AFTER` | structural comparison, with a regression exit code |
+| `ci --report R --fail-on high` | gate a pipeline on the verdict |
+| `sarif --report R` | SARIF 2.1.0 for GitHub code scanning |
+| `wallet import --notes notes.csv` | build wallet facts from CSV exports |
+| `serve` | reports API + the built UI |
+| `doctor`, `devnet` | check a node / print a Regtest recipe |
+
+---
+
+## Measuring the anonymity set
+
+Rules LB-002 and LB-013 are only as good as the crowd you are hiding in, and the tool will not
+invent one. Point it at a block range:
+
+```bash
+leakbench peers --rpc http://127.0.0.1:18232 --from 3500000 --to 3500100 --out peers.json
+leakbench scan --fixture fixtures/example-crossing.json --peers peers.json
+```
+
+The peer set records every transaction in the window with its shape, visible amount and kind
+(`migration`, `payment`, `transparent`), plus a size-band histogram so you can see whether an amount
+is actually hidden. Without a peer sample the rules say `unmeasured` and lower their confidence
+rather than pretending.
+
+## Regressions and code scanning
+
+A single score is a snapshot; the useful question is whether it got worse.
+
+```bash
+leakbench diff january.json february.json --fail-on-regression
+```
+
+`diff` compares findings structurally (by rule id, count, severity and confidence), not textually, so
+a reordered report is not a change. It detects regressions by **unclamped risk**, because a wallet
+already at 0/100 can pick up three more high findings and still read `0 → 0`.
+
+```bash
+leakbench sarif --report february.json --out leakbench.sarif
+```
+
+SARIF drops into GitHub code scanning, so findings appear in the security tab of whatever wallet
+repo runs the gate.
+
+## Wallet facts from CSV
+
+The wallet-side rules need to know which notes are yours. Wallets do not agree on an export format,
+so the required input is the smallest thing any debug screen can produce:
+
+```
+notes.csv      txid,pool,value_zat,received_height[,memo_len,is_change]
+addresses.csv  address,uses,first_height,last_height
+```
+
+```bash
+leakbench wallet import --notes notes.csv --addresses addresses.csv --out wallet.json
+leakbench scan --fixture subject.json --wallet wallet.json
+```
+
+Keep `wallet.json` local: reports contain txids and amounts, wallet exports contain your history.
 
 ---
 

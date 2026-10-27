@@ -481,30 +481,27 @@ fn fee_fingerprint(subject: &Subject) -> Vec<Finding> {
 fn action_count_disclosure(subject: &Subject) -> Vec<Finding> {
     let mut out = Vec::new();
     for tx in &subject.txs {
-        // A pool crossing is already covered by LB-001, and its 1-in/1-out shape
-        // is the normal crossing shape rather than a distinguishing one.
+        // A pool crossing is covered by LB-001, and its minimal shape is the
+        // normal crossing shape rather than a distinguishing one.
         if tx.cross_pool_move().is_some() {
             continue;
         }
-        let total_actions: u32 = tx
-            .active_shielded()
-            .map(|(_, f)| f.action_count())
-            .sum::<u32>()
-            + tx.transparent.spends
-            + tx.transparent.outputs;
+        // In the Orchard protocol every action spends one note and creates one
+        // output, so `spends == outputs` by construction. The meaningful public
+        // number is the action count: how many notes were consumed together.
         let mut evidence = Vec::new();
         let mut finding: Option<(Severity, String)> = None;
         for (pool, facts) in tx.active_shielded() {
             evidence.push(Evidence::new(
                 format!("{} bundle", pool.as_str()),
-                format!("{} spend(s) / {} output(s)", facts.spends, facts.outputs),
+                format!("{} action(s)", facts.spends),
             ));
-            if facts.spends > 2 {
+            if facts.spends > 2 && finding.is_none() {
                 finding = Some((
                     Severity::Medium,
                     format!(
-                        "{} spends in one {} bundle discloses that at least {} notes were \
-                         held and consumed together.",
+                        "A {}-action {} bundle discloses that at least {} notes were held and \
+                         consumed together.",
                         facts.spends,
                         pool.title(),
                         facts.spends
@@ -512,21 +509,10 @@ fn action_count_disclosure(subject: &Subject) -> Vec<Finding> {
                 ));
             }
         }
-        if finding.is_none() && total_actions == 2 && tx.transparent.spends == 0 {
-            finding = Some((
-                Severity::Low,
-                "A 1-in/1-out shape is uncommon: it usually means a whole note was spent at \
-                 once, which the public action count makes visible."
-                    .into(),
-            ));
-        }
         let Some((severity, why)) = finding else {
             continue;
         };
-        evidence.push(Evidence::new(
-            "logical actions",
-            tx.logical_actions().to_string(),
-        ));
+        evidence.push(Evidence::new("logical actions", tx.logical_actions().to_string()));
         evidence.push(Evidence::new("height", height_or_unknown(tx)));
         evidence.push(Evidence::new("txid", tx.txid.clone()));
         out.push(Finding {
@@ -541,9 +527,8 @@ fn action_count_disclosure(subject: &Subject) -> Vec<Finding> {
                  set even though the notes are hidden."
             ),
             evidence,
-            remediation: "Pad to the ordinary shapes: 2 spends / 2 outputs when change is \
-                          needed, 1 spend / 2 outputs otherwise. Consolidate notes in a \
-                          separate transaction that is not adjacent to an identifying payment."
+            remediation: "Consolidate notes in a dedicated transaction that is not adjacent to \
+                          an identifying payment, and pad to the ordinary 2-action shape."
                 .into(),
             txids: vec![tx.txid.clone()],
             references: vec!["https://zips.z.cash/zip-0225".into()],

@@ -188,7 +188,7 @@ pub fn tx_from_node_json(
         txid,
         version,
         block_height: block_height.or_else(|| num(v, &["height", "blockheight"]).map(|h| h as u64)),
-        block_time,
+        block_time: block_time.or_else(|| num(v, &["blocktime", "time"]).map(|t| t as i64)),
         fee_zat,
         transparent,
         sapling,
@@ -253,6 +253,34 @@ mod tests {
         assert_eq!(tx.transparent.value_out_zat, Some(200_000_000));
         assert_eq!(tx.transparent.addresses.len(), 2);
         assert_eq!(tx.transparent.value_in_zat, None);
+    }
+
+    #[test]
+    fn node_json_and_hand_written_fixture_agree() {
+        let node: Value =
+            serde_json::from_str(include_str!("../../../fixtures/rpc/crossing-node.json")).unwrap();
+        let decoded = tx_from_node_json(&node, None, None).unwrap();
+
+        let subject: leakbench_core::Subject =
+            serde_json::from_str(include_str!("../../../fixtures/example-crossing.json")).unwrap();
+        let expected = &subject.txs[0];
+
+        assert_eq!(decoded.txid, expected.txid);
+        assert_eq!(decoded.version, expected.version);
+        assert_eq!(decoded.block_height, expected.block_height);
+        assert_eq!(decoded.block_time, expected.block_time);
+        assert_eq!(decoded.fee_zat, expected.fee_zat);
+        assert_eq!(decoded.orchard.spends, expected.orchard.spends);
+        assert_eq!(decoded.orchard.outputs, expected.orchard.outputs);
+        assert_eq!(
+            decoded.orchard.value_balance_zat,
+            expected.orchard.value_balance_zat
+        );
+        assert_eq!(
+            decoded.ironwood.value_balance_zat,
+            expected.ironwood.value_balance_zat
+        );
+        assert_eq!(decoded.cross_pool_move(), expected.cross_pool_move());
     }
 
     #[test]

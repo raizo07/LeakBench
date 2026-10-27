@@ -37,7 +37,7 @@ and the simulator cannot accidentally depend on a node.
 |-------|----------------|--------------|
 | `leakbench-core` | facts, model, heuristics, scoring, report assembly | `serde` only — no I/O, no chain crates, no clock except `SystemTime` |
 | `leakbench-sim` | deterministic scenarios (`naive`, `hardened`) and peers | `leakbench-core` |
-| `leakbench-chain` | fixture loading, node-JSON decoder, localhost JSON-RPC, devnet recipes | `leakbench-core`, `thiserror` |
+| `leakbench-chain` | fixture loading, node-JSON decoder, localhost JSON-RPC, block-range peer sampling, devnet recipes | `leakbench-core`, `thiserror` |
 | `leakbench-cli` | `scan`, `simulate`, `demo`, `serve`, `ci`, `schema`, `doctor`, `devnet` | everything, plus `clap` and `tiny_http` |
 
 Why this split rather than one crate: the engine is the part that must be reviewable, and a
@@ -104,6 +104,11 @@ Why these choices:
 
 - **Fatal dominates.** The brief says leaks are disqualifying, not deductions. One fatal finding
   lands at 40/100 and the verdict is `disqualified` regardless of everything else.
+- **Fatal is not confidence-scaled.** A fatal disclosure costs the same whether we are certain or
+  not, because the policy is "leaks are disqualifying", not "leaks are disqualifying with
+  probability p". Scaling it by confidence had a perverse effect: supplying better evidence raised
+  the risk and *lowered* the score. Non-fatal findings still scale by confidence, where it means
+  what it should.
 - **Damping, not multiplication.** A wallet with forty round-number payments is worse than one with
   two, but not twenty times worse. Undamped sums saturate at zero and hide the shape of the problem.
 - **Linear and inspectable.** Any judge can recompute the score from the findings table in ten
@@ -130,6 +135,18 @@ change bumps the string and ships a migration note.
 
 Rules that need an anonymity set take `subject.peers`. If `peers` is empty, lower confidence and say
 so — never infer an anonymity set you were not given.
+
+## Diffing, gates and reports
+
+Three outputs share one model:
+
+- `leakbench ci --fail-on high` turns a report into an exit code;
+- `leakbench diff before.json after.json` compares structurally — by rule id, count, severity and
+  confidence — so a reordered report is not a change, and it detects regressions using **unclamped
+  risk** (`score.risk_points`), because the 0–100 score saturates and would hide new findings on an
+  already-disqualified wallet;
+- `leakbench sarif` emits SARIF 2.1.0 with `partialFingerprints`, so a finding keeps its identity
+  across runs and shows up in code scanning.
 
 ## Testing
 

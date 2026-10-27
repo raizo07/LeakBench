@@ -1,6 +1,6 @@
 {
   "schema": "leakbench.report.v1",
-  "generated_at": "2026-10-27T09:13:08Z",
+  "generated_at": "2026-10-27T00:00:00Z",
   "engine": {
     "name": "leakbench",
     "version": "0.1.0",
@@ -343,7 +343,7 @@
       "time": 1791453600,
       "txid": "63e5227c770913a8225d486495f1443a0c89513e3b01d519dbcd6ffd274e5105",
       "label": "crossing 1",
-      "shape": "t0/0 s0/0 o1/0 i0/1",
+      "shape": "t0/0 s0/0 o1/1 i1/1",
       "severity": "medium"
     },
     {
@@ -351,7 +351,7 @@
       "time": 1791588600,
       "txid": "645a42f5ff44daac2f9965c20cd88957dfac68939ab950ad3f066a5330f53689",
       "label": "crossing 2",
-      "shape": "t0/0 s0/0 o1/0 i0/1",
+      "shape": "t0/0 s0/0 o1/1 i1/1",
       "severity": "medium"
     },
     {
@@ -359,7 +359,7 @@
       "time": 1791776100,
       "txid": "d236c0eb023a03bbf55a45e5866064ef2efb752481e134a9dc6523b91b409755",
       "label": "crossing 3",
-      "shape": "t0/0 s0/0 o1/0 i0/1",
+      "shape": "t0/0 s0/0 o1/1 i1/1",
       "severity": "medium"
     },
     {
@@ -367,7 +367,7 @@
       "time": 1792173600,
       "txid": "eb8cb4a08b4b7564036700cd5c7afd0435b82619ff269c0c730a72b75b3d859c",
       "label": "crossing 4",
-      "shape": "t0/0 s0/0 o1/0 i0/1",
+      "shape": "t0/0 s0/0 o1/1 i1/1",
       "severity": "medium"
     },
     {
@@ -375,7 +375,7 @@
       "time": 1792593600,
       "txid": "7f1491e8775c46e08de068fd430439ac3657fe8ceef6710a841a2d69eb7bfd02",
       "label": "crossing 5",
-      "shape": "t0/0 s0/0 o1/0 i0/1",
+      "shape": "t0/0 s0/0 o1/1 i1/1",
       "severity": "medium"
     },
     {
@@ -383,21 +383,21 @@
       "time": 1792878600,
       "txid": "741159fcf063d4cd3a0a2b124d2a9d29d7922a1c580b39771d5b74b6e3ed184b",
       "label": "merchant invoice #900",
-      "shape": "t0/0 s0/0 o0/0 i1/2"
+      "shape": "t0/0 s0/0 o0/0 i2/2"
     },
     {
       "height": 3534000,
       "time": 1793103600,
       "txid": "a73826ded939313e842cb91be66ec62be2faa17c0fcfeb36eb565a22750ee23e",
       "label": "merchant invoice #901",
-      "shape": "t0/0 s0/0 o0/0 i1/2"
+      "shape": "t0/0 s0/0 o0/0 i2/2"
     },
     {
       "height": 3539000,
       "time": 1793478600,
       "txid": "8843e4b367f0ca8426699676200ff4fc5a368726fb874edbdc3742a05830e95f",
       "label": "merchant invoice #902",
-      "shape": "t0/0 s0/0 o0/0 i1/2"
+      "shape": "t0/0 s0/0 o0/0 i2/2"
     }
   ],
   "facts": {
@@ -542,7 +542,7 @@
         "version": 6,
         "block_height": 3512000,
         "block_time": 1791453600,
-        "fee_zat": 10000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -553,11 +553,11 @@
         },
         "orchard": {
           "spends": 1,
-          "outputs": 0,
+          "outputs": 1,
           "value_balance_zat": 112730000
         },
         "ironwood": {
-          "spends": 0,
+          "spends": 1,
           "outputs": 1,
           "value_balance_zat": -112730000
         },
@@ -570,7 +570,7 @@
         "version": 6,
         "block_height": 3513800,
         "block_time": 1791588600,
-        "fee_zat": 10000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -581,11 +581,11 @@
         },
         "orchard": {
           "spends": 1,
-          "outputs": 0,
+          "outputs": 1,
           "value_balance_zat": 84190000
         },
         "ironwood": {
-          "spends": 0,
+          "spends": 1,
           "outputs": 1,
           "value_balance_zat": -84190000
         },
@@ -598,7 +598,7 @@
         "version": 6,
         "block_height": 3516300,
         "block_time": 1791776100,
-        "fee_zat": 10000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -609,11 +609,11 @@
         },
         "orchard": {
           "spends": 1,
-          "outputs": 0,
+          "outputs": 1,
           "value_balance_zat": 140970000
         },
         "ironwood": {
-          "spends": 0,
+          "spends": 1,
           "outputs": 1,
           "value_balance_zat": -140970000
         },
@@ -626,7 +626,7 @@
         "version": 6,
         "block_height": 3521600,
         "block_time": 1792173600,
-        "fee_zat": 10000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -637,11 +637,11 @@
         },
         "orchard": {
           "spends": 1,
-          "outputs": 0,
+          "outputs": 1,
           "value_balance_zat": 61830000
         },
         "ironwood": {
-          "spends": 0,
+          "spends": 1,
           "outputs": 1,
           "value_balance_zat": -61830000
         },
@@ -654,7 +654,7 @@
         "version": 6,
         "block_height": 3527200,
         "block_time": 1792593600,
-        "fee_zat": 10000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -665,11 +665,11 @@
         },
         "orchard": {
           "spends": 1,
-          "outputs": 0,
+          "outputs": 1,
           "value_balance_zat": 99990000
         },
         "ironwood": {
-          "spends": 0,
+          "spends": 1,
           "outputs": 1,
           "value_balance_zat": -99990000
         },
@@ -682,7 +682,7 @@
         "version": 6,
         "block_height": 3531000,
         "block_time": 1792878600,
-        "fee_zat": 15000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -696,9 +696,9 @@
           "outputs": 0
         },
         "ironwood": {
-          "spends": 1,
+          "spends": 2,
           "outputs": 2,
-          "value_balance_zat": 299985000
+          "value_balance_zat": 299980000
         },
         "anchor_age_blocks": 1,
         "label": "merchant invoice #900",
@@ -709,7 +709,7 @@
         "version": 6,
         "block_height": 3534000,
         "block_time": 1793103600,
-        "fee_zat": 15000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -723,9 +723,9 @@
           "outputs": 0
         },
         "ironwood": {
-          "spends": 1,
+          "spends": 2,
           "outputs": 2,
-          "value_balance_zat": 149985000
+          "value_balance_zat": 149980000
         },
         "anchor_age_blocks": 1,
         "label": "merchant invoice #901",
@@ -736,7 +736,7 @@
         "version": 6,
         "block_height": 3539000,
         "block_time": 1793478600,
-        "fee_zat": 15000,
+        "fee_zat": 20000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -750,9 +750,9 @@
           "outputs": 0
         },
         "ironwood": {
-          "spends": 1,
+          "spends": 2,
           "outputs": 2,
-          "value_balance_zat": 449985000
+          "value_balance_zat": 449980000
         },
         "anchor_age_blocks": 1,
         "label": "merchant invoice #902",

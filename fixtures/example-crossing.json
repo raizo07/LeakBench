@@ -13,8 +13,8 @@
       "fee_zat": 10000,
       "transparent": { "spends": 0, "outputs": 0 },
       "sapling": {},
-      "orchard": { "spends": 2, "outputs": 0, "value_balance_zat": 500000000 },
-      "ironwood": { "spends": 0, "outputs": 1, "value_balance_zat": -500000000 },
+      "orchard": { "spends": 2, "outputs": 2, "value_balance_zat": 500000000 },
+      "ironwood": { "spends": 1, "outputs": 1, "value_balance_zat": -500000000 },
       "anchor_age_blocks": 130,
       "label": "migrate full balance",
       "source": "manual"

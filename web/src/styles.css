@@ -6,7 +6,7 @@
   --line-2: #2b333e;
   --ink: #e9edf2;
   --ink-2: #c2cbd5;
-  --muted: #7d8b9c;
+  --muted: #94a3b3;
   --crit: #ff5f56;
   --high: #f0883e;
   --med: #d9b544;
@@ -287,7 +287,7 @@ code,
 
 .eyebrow {
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
@@ -681,7 +681,7 @@ code,
 }
 .fix-label {
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--mint);
@@ -820,7 +820,7 @@ code,
 }
 .g-col {
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   fill: var(--muted);

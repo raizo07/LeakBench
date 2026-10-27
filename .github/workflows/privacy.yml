@@ -52,6 +52,20 @@ jobs:
       # A gate that has never failed is a gate nobody has tested. This asserts
       # that the fatal subject is actually rejected, so the pass above means
       # something.
+      - name: sarif output
+        run: |
+          cargo run -p leakbench-cli -- sarif --report reports/naive.json --out reports/naive.sarif
+          test -s reports/naive.sarif
+
+      # diff must notice the regression, not just print something plausible.
+      - name: diff detects the regression
+        run: |
+          if cargo run -p leakbench-cli -- diff reports/hardened.json reports/naive.json --fail-on-regression; then
+            echo "::error::expected the hardened→naive diff to be a regression"
+            exit 1
+          fi
+          echo "regression correctly detected"
+
       - name: privacy gate — the fatal subject must be rejected
         run: |
           if cargo run -p leakbench-cli -- ci --report reports/naive.json --fail-on high; then

@@ -32,6 +32,48 @@ fn civil_from_days(z: i64) -> (i64, u32, u32) {
     (if m <= 2 { y + 1 } else { y }, m, d)
 }
 
+/// Parse `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM:SSZ`, or a bare epoch second count.
+///
+/// Hand-rolled for the same reason as the formatter: `--as-of` is the only date
+/// parsing in the tool, and a dependency for it would be silly.
+pub fn parse_timestamp(input: &str) -> Option<i64> {
+    let s = input.trim();
+    if s.is_empty() {
+        return None;
+    }
+    if s.bytes().all(|b| b.is_ascii_digit()) {
+        return s.parse::<i64>().ok();
+    }
+    let s = s.strip_suffix('Z').unwrap_or(s);
+    let (date, time) = s
+        .split_once('T')
+        .or_else(|| s.split_once(' '))
+        .unwrap_or((s, "00:00:00"));
+    let mut d = date.split('-');
+    let y: i64 = d.next()?.parse().ok()?;
+    let m: i64 = d.next()?.parse().ok()?;
+    let day: i64 = d.next()?.parse().ok()?;
+    let mut t = time.split(':');
+    let hh: i64 = t.next()?.parse().ok()?;
+    let mm: i64 = t.next().unwrap_or("0").parse().ok()?;
+    let ss: i64 = t.next().unwrap_or("0").parse().ok()?;
+    if !(1..=12).contains(&m) || !(1..=31).contains(&day) || hh > 23 || mm > 59 || ss > 60 {
+        return None;
+    }
+    Some(days_from_civil(y, m, day) * 86_400 + hh * 3_600 + mm * 60 + ss)
+}
+
+/// Inverse of [`civil_from_days`].
+fn days_from_civil(y: i64, m: i64, d: i64) -> i64 {
+    let y = if m <= 2 { y - 1 } else { y };
+    let era = if y >= 0 { y } else { y - 399 } / 400;
+    let yoe = y - era * 400;
+    let mp = if m > 2 { m - 3 } else { m + 9 };
+    let doy = (153 * mp + 2) / 5 + d - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    era * 146_097 + doe - 719_468
+}
+
 /// Epoch seconds for "now", without pulling in a clock crate.
 pub fn now_epoch_secs() -> i64 {
     use std::time::{SystemTime, UNIX_EPOCH};
@@ -68,6 +110,26 @@ mod tests {
     #[test]
     fn handles_leap_day() {
         assert_eq!(to_iso8601(1_709_164_800), "2024-02-29T00:00:00Z");
+    }
+
+    #[test]
+    fn parses_timestamps() {
+        assert_eq!(parse_timestamp("0"), Some(0));
+        assert_eq!(parse_timestamp("1788316200"), Some(1_788_316_200));
+        assert_eq!(parse_timestamp("2026-10-27T00:00:00Z"), Some(1_793_059_200));
+        assert_eq!(parse_timestamp("2026-10-27"), Some(1_793_059_200));
+        assert_eq!(parse_timestamp("2026-10-27 12:34:56"), Some(1_793_104_496));
+        assert_eq!(parse_timestamp("not a date"), None);
+        assert_eq!(parse_timestamp("2026-13-01"), None);
+        assert_eq!(parse_timestamp("2026-10-27T25:00:00Z"), None);
+    }
+
+    #[test]
+    fn timestamp_round_trips() {
+        for stamp in [0, 1_700_000_000, 1_793_059_200, 1_795_000_000] {
+            let iso = to_iso8601(stamp);
+            assert_eq!(parse_timestamp(&iso), Some(stamp), "{iso}");
+        }
     }
 
     #[test]

@@ -16,7 +16,8 @@ clippy:
 
 # Regenerate both scenarios, including the bundle the UI imports.
 demo:
-	cargo run -p leakbench-cli -- demo --out reports --web web/src/demo
+	cargo run -p leakbench-cli -- demo --out reports --web web/src/demo \
+		--as-of 2026-10-27T00:00:00Z
 
 # Rebuild the report UI into a single self-contained index.html.
 web:

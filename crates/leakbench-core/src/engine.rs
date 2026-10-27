@@ -13,6 +13,15 @@ use crate::time;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub fn analyze(subject: &Subject) -> Report {
+    analyze_at(subject, None)
+}
+
+/// Analyze with an explicit generation time.
+///
+/// A pinned timestamp makes a report byte-stable, which matters for committed
+/// demo bundles and for golden files: otherwise every `make demo` rewrites the
+/// JSON and dirties the tree.
+pub fn analyze_at(subject: &Subject, generated_at: Option<i64>) -> Report {
     let findings = heuristics::run_all(subject);
     let score = score::score_findings(&findings);
 
@@ -57,7 +66,7 @@ pub fn analyze(subject: &Subject) -> Report {
 
     Report {
         schema: SCHEMA.to_string(),
-        generated_at: time::to_iso8601(time::now_epoch_secs()),
+        generated_at: time::to_iso8601(generated_at.unwrap_or_else(time::now_epoch_secs)),
         engine: EngineInfo {
             name: "leakbench".into(),
             version: VERSION.into(),
