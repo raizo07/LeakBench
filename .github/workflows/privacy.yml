@@ -21,7 +21,16 @@ jobs:
       - name: generate reports
         run: cargo run -p leakbench-cli -- demo --out reports
 
-      - name: privacy gate (fails on a fatal or high finding)
+      - name: privacy gate — the hardened subject must pass
+        run: cargo run -p leakbench-cli -- ci --report reports/hardened.json --fail-on high
+
+      # A gate that has never failed is a gate nobody has tested. This asserts
+      # that the fatal subject is actually rejected, so the pass above means
+      # something.
+      - name: privacy gate — the fatal subject must be rejected
         run: |
-          cargo run -p leakbench-cli -- ci --report reports/hardened.json --fail-on high
-          cargo run -p leakbench-cli -- ci --report reports/naive.json --fail-on high || true
+          if cargo run -p leakbench-cli -- ci --report reports/naive.json --fail-on high; then
+            echo "::error::expected the naive scenario to fail the gate"
+            exit 1
+          fi
+          echo "naive scenario correctly rejected"
