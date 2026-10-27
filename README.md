@@ -23,6 +23,17 @@ LeakBench is the tool that tells you what your wallet just published.
 
 ---
 
+## Watch it
+
+A two-minute demo film — paper, ink and black redaction bars, 96 BPM:
+**[docs/leakbench-demo.mp4](docs/leakbench-demo.mp4)** (1080p30, −14 LUFS).
+
+It is built with a deterministic motion-and-sound framework in [`film/`](film/): one timeline drives
+both the picture and the score, so every hit you see is a hit you hear. Rebuild it with
+`cd film && make` (see [film/README.md](film/README.md)).
+
+---
+
 ## The short version
 
 ```
