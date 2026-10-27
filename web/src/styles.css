@@ -135,6 +135,13 @@ code,
   align-items: start;
 }
 
+.main,
+.tabpanel {
+  /* Grid items default to a min-content floor; wide tables and SVGs would
+     push the whole page past the viewport instead of scrolling themselves. */
+  min-width: 0;
+}
+
 .rail {
   position: sticky;
   top: 86px;
@@ -428,8 +435,15 @@ code,
   gap: 2px;
   margin: 22px 0 14px;
   border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 .tabs button {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -648,6 +662,7 @@ code,
 }
 .ev dd .mono {
   color: var(--ink);
+  overflow-wrap: anywhere;
 }
 .ev dd em {
   font-style: normal;
@@ -800,7 +815,7 @@ code,
 .graph {
   display: block;
   width: 100%;
-  min-width: 720px;
+  min-width: 560px;
   height: auto;
 }
 .g-col {
@@ -1038,13 +1053,20 @@ code,
 
 @media (max-width: 1080px) {
   .shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .rail {
     position: static;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+  }
+  .rail-item {
+    flex: 1 1 210px;
+    min-width: 0;
+  }
+  .hero-score {
+    flex-wrap: wrap;
   }
   .rail-head {
     display: none;
@@ -1067,15 +1089,45 @@ code,
 
 @media (max-width: 720px) {
   .app {
-    padding: 0 16px 56px;
+    padding: 0 14px 56px;
   }
   .topbar {
-    margin: 0 -16px;
-    padding: 0 16px;
+    margin: 0 -14px;
+    padding: 0 14px;
   }
-  .topmeta .src,
-  .topmeta .sep {
+  .topmeta {
     display: none;
+  }
+  .hero {
+    padding: 20px 16px;
+    gap: 18px;
+  }
+  .hero h1 {
+    font-size: 25px;
+  }
+  .panel {
+    padding: 18px 14px;
+  }
+  .panel-head {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .finding {
+    padding: 13px 13px 14px;
+  }
+  .fix {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .metric-value {
+    font-size: 17px;
+  }
+  .dial {
+    width: 124px;
+    height: auto;
+  }
+  .delta-badge {
+    flex-wrap: wrap;
   }
   .metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1089,6 +1141,41 @@ code,
     gap: 2px;
   }
   .cat {
+    display: none;
+  }
+}
+
+/* Keyboard focus must be visible on a near-black surface. */
+:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.tabs button:focus-visible {
+  outline-offset: -3px;
+  border-radius: 6px;
+}
+.tabpanel:focus-visible {
+  outline-offset: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-ver {
+    display: none;
+  }
+  .rail-score {
+    font-size: 18px;
+  }
+  .tab-count {
     display: none;
   }
 }

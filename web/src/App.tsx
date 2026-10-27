@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import Findings from './Findings';
 import { CompareView, FactsView, GraphView, TimelineView } from './Views';
 import { height, loadDataset, zec, type Dataset } from './data';
@@ -60,6 +60,16 @@ export default function App() {
     return [...preferred.filter((id) => data.reports[id]), ...rest];
   }, [data]);
 
+  const onTabKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    event.preventDefault();
+    const index = TABS.findIndex((tab) => tab.id === view);
+    const step = event.key === 'ArrowRight' ? 1 : -1;
+    const next = TABS[(index + step + TABS.length) % TABS.length];
+    setView(next.id);
+    document.getElementById(`tab-${next.id}`)?.focus();
+  };
+
   if (!data) {
     return (
       <div className="boot">
@@ -106,6 +116,7 @@ export default function App() {
                 className="rail-item"
                 data-active={id === selected}
                 data-verdict={r.verdict}
+                aria-current={id === selected ? 'page' : undefined}
                 onClick={() => setSelected(id)}
               >
                 <span className="rail-score">{r.score.value}</span>
@@ -134,9 +145,11 @@ export default function App() {
             <a href="https://github.com/raizo07/LeakBench" target="_blank" rel="noreferrer">
               source
             </a>
-            <a href="api/index.json" target="_blank" rel="noreferrer">
-              api
-            </a>
+            {data.live && (
+              <a href="api/index.json" target="_blank" rel="noreferrer">
+                api
+              </a>
+            )}
             <a href="https://zips.z.cash/zip-0258" target="_blank" rel="noreferrer">
               ZIP 258
             </a>
@@ -184,12 +197,15 @@ export default function App() {
             </div>
           </section>
 
-          <nav className="tabs" role="tablist">
+          <nav className="tabs" role="tablist" aria-label="Report sections" onKeyDown={onTabKeyDown}>
             {TABS.map((tab) => (
               <button
                 key={tab.id}
+                id={`tab-${tab.id}`}
                 role="tab"
                 aria-selected={view === tab.id}
+                aria-controls="panel"
+                tabIndex={view === tab.id ? 0 : -1}
                 data-active={view === tab.id}
                 onClick={() => setView(tab.id)}
               >
@@ -199,11 +215,19 @@ export default function App() {
             ))}
           </nav>
 
-          {view === 'findings' && <Findings report={report} />}
-          {view === 'timeline' && <TimelineView report={report} />}
-          {view === 'graph' && <GraphView report={report} />}
-          {view === 'facts' && <FactsView report={report} />}
-          {view === 'compare' && <CompareView reports={reports} />}
+          <div
+            className="tabpanel"
+            id="panel"
+            role="tabpanel"
+            aria-labelledby={`tab-${view}`}
+            tabIndex={0}
+          >
+            {view === 'findings' && <Findings report={report} />}
+            {view === 'timeline' && <TimelineView report={report} />}
+            {view === 'graph' && <GraphView report={report} />}
+            {view === 'facts' && <FactsView report={report} />}
+            {view === 'compare' && <CompareView reports={reports} />}
+          </div>
 
           <footer className="foot">
             <p>{report.disclaimer}</p>

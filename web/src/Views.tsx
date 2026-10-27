@@ -64,7 +64,7 @@ export function TimelineView({ report }: { report: Report }) {
         <span>{height(max)}</span>
       </div>
 
-      <table className="table">
+      <div className="table-scroll"><table className="table">
         <thead>
           <tr>
             <th>height</th>
@@ -104,7 +104,7 @@ export function TimelineView({ report }: { report: Report }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </section>
   );
 }
@@ -324,7 +324,7 @@ export function FactsView({ report }: { report: Report }) {
             {report.facts.wallet.addresses.length} transparent address(es) · birthday{' '}
             {height(report.facts.wallet.birthday_height)}
           </p>
-          <table className="table">
+          <div className="table-scroll"><table className="table">
             <thead>
               <tr>
                 <th>pool</th>
@@ -345,7 +345,7 @@ export function FactsView({ report }: { report: Report }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </div>
       )}
     </section>
