@@ -75,7 +75,7 @@ Each is implemented in `src/film.js` against the events in `timeline.json`.
 | stamp (7 px border, radius 14, multiply) | Verified / Not verified |
 | receipt printer (slot, torn top, tear-off) | the fix |
 | typing (one event per character, block caret) | the gate |
-| counter and dots (22 px, 30 apart, 22 per row) | 23 findings |
+| counter and dots (22 px, 30 apart, 22 per row) | 20 findings |
 | pop-in tiles | shrinking into the first dots |
 | bars lifting off rows | the crossing sheet leaving |
 | pinned slips (26 px pin, seeded tilt) | anonymity set |
@@ -106,7 +106,7 @@ Peaks at −6 dBFS; `render.mjs` runs ffmpeg `loudnorm` to −14 LUFS and muxes 
 |---|---|---|
 | 0–4 | open | "Every shielded payment publishes an amount." |
 | 4–8 | the turnstile | a crossing sheet: +5.00000000 ZEC, height 3,500,041 |
-| 8–12 | 23 findings | counter + dots |
+| 8–12 | 20 findings | counter + dots |
 | 12–16 | what it actually sees | the real findings screen, camera to the fatal card, "Not verified" |
 | 16–20 | 0 → 79 | naive vs hardened, red and green stamps |
 | 20–24 | how to cross | receipt printer, five chunks, torn off |
@@ -128,6 +128,16 @@ place in a two-minute product demo, and are deliberately absent rather than fake
   and no bar that becomes the mascot, so those three would have been animation with nothing to do;
 - **camera push-in that lands on a hit** — the camera drifts and zooms, but every move ends on a
   drift rather than a beat landing.
+
+## What the numbers are
+
+The two wallets in the film are the deterministic simulator from
+[`crates/leakbench-sim`](../crates/leakbench-sim): a designed A/B that cannot exist on chain. Every
+report in the repo labels them `simulated`, and the UI prints `simulated` in its header.
+
+The analyzer is separately exercised against **real mainnet transactions** — an Orchard→Ironwood
+crossing, an unshielding, and a round 8 ZEC unshield — in [`fixtures/mainnet`](../fixtures/mainnet)
+with provenance. Those are the numbers to quote when someone asks whether it works on the chain.
 
 ## Notes
 

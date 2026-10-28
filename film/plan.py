@@ -157,14 +157,14 @@ for i in range(3):
 # =========================================================================
 s_count = scene(
     "findings", 8, 12, "counter",
-    heading="23 findings",
+    heading="20 findings",
     cues={
         "heading": r(at(8)),
         "count_start": r(at(8, 2)),
         "count_end": r(at(10)),
         "tiles": r(at(8, 1)),
     },
-    count={"from": 0, "to": 23, "rows": 22},
+    count={"from": 0, "to": 20, "rows": 22},
     lines=[
         {"text": "Fourteen rules fire on one wallet.", "t": r(at(10, 1)), "top": 770},
         {"text": "Score 0. Grade F. Disqualified.", "t": r(at(10, 3)), "top": 828},
@@ -260,7 +260,7 @@ s_receipt = scene(
             {"left": "chunk", "right": "1.1273 ZEC"},
             {"left": "chunk", "right": "0.8419 ZEC"},
             {"left": "chunk", "right": "1.4097 ZEC"},
-            {"left": "fee", "right": "20,000 zats"},
+            {"left": "fee", "right": "10,000 zats"},
             {"left": "transparent leg", "right": "none"},
         ],
         "foot": "migrate in five crossings",

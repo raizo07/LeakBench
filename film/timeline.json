@@ -104,7 +104,7 @@
    "start": 20.0,
    "end": 30.0,
    "template": "counter",
-   "heading": "23 findings",
+   "heading": "20 findings",
    "cues": {
     "heading": 20.0,
     "count_start": 21.25,
@@ -113,7 +113,7 @@
    },
    "count": {
     "from": 0,
-    "to": 23,
+    "to": 20,
     "rows": 22
    },
    "lines": [
@@ -254,7 +254,7 @@
      },
      {
       "left": "fee",
-      "right": "20,000 zats"
+      "right": "10,000 zats"
      },
      {
       "left": "transparent leg",
