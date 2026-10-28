@@ -512,7 +512,10 @@ fn action_count_disclosure(subject: &Subject) -> Vec<Finding> {
         let Some((severity, why)) = finding else {
             continue;
         };
-        evidence.push(Evidence::new("logical actions", tx.logical_actions().to_string()));
+        evidence.push(Evidence::new(
+            "logical actions",
+            tx.logical_actions().to_string(),
+        ));
         evidence.push(Evidence::new("height", height_or_unknown(tx)));
         evidence.push(Evidence::new("txid", tx.txid.clone()));
         out.push(Finding {

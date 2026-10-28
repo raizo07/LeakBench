@@ -137,6 +137,22 @@ leakbench scan --fixture crossing.json --peers peers.json
 `scan --peers` also accepts a bare array. You can hand-write it, or feed it from an indexer. Without them, LB-002 and LB-013 report lower confidence and
 LB-001 treats every crossing as identifying — conservative on purpose.
 
+## Producing facts from raw hex
+
+No node needed, if you have the raw transaction (`getrawtransaction <txid> 0`, or any explorer's
+`raw_transaction` field):
+
+```bash
+leakbench scan --raw tx.hex --height 3533241
+```
+
+The bytes are read with `zcash_primitives`, the reference implementation; facts are then identical to
+the node-JSON path. The `source` becomes `raw`, and `--height` supplies the one field the bytes cannot
+carry. Transparent output addresses are not extracted on this path, so LB-008 stays silent.
+
+Three real transactions ship this way in `fixtures/mainnet/` — see
+[PROVENANCE.md](../fixtures/mainnet/PROVENANCE.md).
+
 ## Producing facts from a node
 
 ```bash

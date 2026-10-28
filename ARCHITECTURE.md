@@ -37,7 +37,7 @@ and the simulator cannot accidentally depend on a node.
 |-------|----------------|--------------|
 | `leakbench-core` | facts, model, heuristics, scoring, report assembly | `serde` only — no I/O, no chain crates, no clock except `SystemTime` |
 | `leakbench-sim` | deterministic scenarios (`naive`, `hardened`) and peers | `leakbench-core` |
-| `leakbench-chain` | fixture loading, node-JSON decoder, localhost JSON-RPC, block-range peer sampling, devnet recipes | `leakbench-core`, `thiserror` |
+| `leakbench-chain` | fixture loading, node-JSON decoder, raw-tx parsing (librustzcash, optional), localhost JSON-RPC, block-range peer sampling, devnet recipes | `leakbench-core`, `thiserror`, optionally `zcash_primitives` |
 | `leakbench-cli` | `scan`, `simulate`, `demo`, `serve`, `ci`, `schema`, `doctor`, `devnet` | everything, plus `clap` and `tiny_http` |
 
 Why this split rather than one crate: the engine is the part that must be reviewable, and a
@@ -49,18 +49,27 @@ fixture harness.
 by hand: no TLS stack, no `reqwest`, no certificate store, and a much smaller supply chain for a
 tool that asks for your viewing keys' outputs. Remote nodes are a non-goal; use an SSH tunnel.
 
-## Why facts instead of raw transaction bytes
+## Two front doors, one fact model
 
-A privacy analyzer's worst failure is not "no findings", it is *confident wrong findings*. Zcash
-v5/v6 transaction encodings are long, versioned and unforgiving; a hand-rolled parser that is 99%
-right will misplace a value balance in the remaining 1% and report a leak that does not exist.
+A privacy analyzer's worst failure is not "no findings", it is *confident wrong findings*. Zcash v5/v6
+encodings are long, versioned and unforgiving, and a hand-rolled parser that is 99% right will
+misplace a value balance in the remaining 1%.
 
-So LeakBench does not parse raw bytes. It maps the **node's own decoded JSON** onto `TxFacts`, with
-aliases for the field-name differences between `zcashd`, `zebrad` and tooling, and it degrades
-rather than guesses: an unknown field becomes `None`, and `None` lowers confidence.
+So there are exactly two ways in, and neither is hand-rolled:
 
-`TxFacts` is also the interchange format. You can write one by hand (`docs/FACTS.md`), generate it
-from your own indexer, or hand the tool a report's `facts` section — reports are re-analyzable.
+1. **The node's decoded JSON** (`scan --rpc`, `scan --decoded`) — the node already parsed it.
+2. **Raw transaction bytes** (`scan --raw`) — parsed by `zcash_primitives`, the reference
+   implementation, behind the optional `raw` feature in `leakbench-chain`.
+
+The second door is what makes the analyzer usable without a synced node: any explorer that serves
+raw hex is enough, and the facts are still produced by the same code a node would use. The fact model
+in the middle is identical either way, so the rules never learn where the data came from — only the
+`source` field records it.
+
+Transparent addresses are not extracted on the raw path (that needs script interpretation), so LB-008
+does not fire on raw data; everything shielded is exact. Transparent *input* values are not in a
+transaction at all, so the fee is only derived when the transaction is fully shielded — which is the
+common case for the rules that matter.
 
 ## The fact that makes this tool necessary
 

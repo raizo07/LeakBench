@@ -17,7 +17,7 @@ pub const SCHEMA: &str = r#"{
         "name": { "type": "string" },
         "version": { "type": "string" },
         "heuristics": { "type": "integer", "minimum": 0 },
-        "fact_sources": { "type": "array", "items": { "enum": ["fixture", "rpc", "simulated", "manual"] } },
+        "fact_sources": { "type": "array", "items": { "enum": ["fixture", "rpc", "raw", "simulated", "manual"] } },
         "network": { "type": "string" },
         "block_interval_secs": { "type": "integer", "minimum": 1 }
       }

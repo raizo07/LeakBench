@@ -56,15 +56,15 @@ pub fn naive() -> Scenario {
 
     // Two payroll receipts, both plain 2-in/2-out Orchard transfers.
     txs.push(TxFacts {
-        fee_zat: Some(20_000),
-        orchard: shielded(2, 2, 20_000),
+        fee_zat: Some(10_000),
+        orchard: shielded(2, 2, 10_000),
         label: Some("payroll #2211".into()),
         anchor_age_blocks: Some(1),
         ..tx("payroll-2211", h, &mut rng)
     });
     txs.push(TxFacts {
-        fee_zat: Some(20_000),
-        orchard: shielded(2, 2, 20_000),
+        fee_zat: Some(10_000),
+        orchard: shielded(2, 2, 10_000),
         label: Some("payroll #2237".into()),
         anchor_age_blocks: Some(1),
         ..tx("payroll-2237", h + 40, &mut rng)
@@ -93,8 +93,8 @@ pub fn naive() -> Scenario {
     // Unshielding to an exchange deposit address: amount, address, timing public.
     const DEPOSIT: &str = "t1UnExChangeDepositAddr9kQ";
     txs.push(TxFacts {
-        fee_zat: Some(15_000),
-        ironwood: shielded(1, 1, ZEC + 15_000),
+        fee_zat: Some(10_000),
+        ironwood: shielded(1, 1, ZEC + 10_000),
         transparent: PoolFacts {
             spends: 0,
             outputs: 1,
@@ -221,8 +221,8 @@ pub fn hardened() -> Scenario {
     ];
     for (i, (offset, _value)) in receipts.iter().enumerate() {
         txs.push(TxFacts {
-            fee_zat: Some(20_000),
-            orchard: shielded(2, 2, 20_000),
+            fee_zat: Some(10_000),
+            orchard: shielded(2, 2, 10_000),
             label: Some(format!("payroll #{}", 5100 + i)),
             anchor_age_blocks: Some(1),
             ..tx(&format!("payroll-{i}"), h + *offset, &mut rng)
@@ -241,7 +241,7 @@ pub fn hardened() -> Scenario {
     let mut peers = Vec::with_capacity(48);
     for (i, (offset, value)) in crossings.iter().enumerate() {
         txs.push(TxFacts {
-            fee_zat: Some(20_000),
+            fee_zat: Some(10_000),
             orchard: shielded(1, 1, *value),
             ironwood: shielded(1, 1, -*value),
             label: Some(format!("crossing {}", i + 1)),
@@ -282,8 +282,8 @@ pub fn hardened() -> Scenario {
     .enumerate()
     {
         txs.push(TxFacts {
-            fee_zat: Some(20_000),
-            ironwood: shielded(2, 2, *value - 20_000),
+            fee_zat: Some(10_000),
+            ironwood: shielded(2, 2, *value - 10_000),
             label: Some(format!("merchant invoice #{}", 900 + i)),
             anchor_age_blocks: Some(1),
             ..tx(&format!("invoice-{i}"), h + *offset, &mut rng)

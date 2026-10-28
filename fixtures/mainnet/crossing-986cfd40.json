@@ -1,0 +1,41 @@
+{
+ "label": "crossing-986cfd40",
+ "kind": "transaction",
+ "network": "main",
+ "description": "Real Orchard to Ironwood turnstile crossing: +63,400 zats leaving Orchard, 43,400 entering Ironwood, 20,000 fee. block 3533241, txid 986cfd4042614e841fc21187fce3ba254a24c24aa8fdec63fb5b12133b81ec2a",
+ "context": {
+  "block_interval_secs": 75,
+  "tip_height": 3533241
+ },
+ "txs": [
+  {
+   "txid": "986cfd4042614e841fc21187fce3ba254a24c24aa8fdec63fb5b12133b81ec2a",
+   "version": 6,
+   "block_height": 3533241,
+   "fee_zat": 20000,
+   "transparent": {
+    "spends": 0,
+    "outputs": 0,
+    "value_in_zat": 0
+   },
+   "sapling": {
+    "spends": 0,
+    "outputs": 0
+   },
+   "orchard": {
+    "spends": 2,
+    "outputs": 2,
+    "value_balance_zat": 63400
+   },
+   "ironwood": {
+    "spends": 2,
+    "outputs": 2,
+    "value_balance_zat": -43400
+   },
+   "expiry_height": 3533281,
+   "lock_time": 0,
+   "source": "raw"
+  }
+ ],
+ "peers": []
+}

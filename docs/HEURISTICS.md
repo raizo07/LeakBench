@@ -87,15 +87,21 @@ that amount as public and keep it separate from the rest of the balance.
 
 **Observable.** `fee` versus the ZIP 317 conventional fee for the transaction's logical actions.
 
-**Why it leaks.** Wallets hard-code fee policies. A fee that is exactly 10,000 zats on a
-three-action transaction, or a round 100,000, groups every transaction that shares it into one
-software cohort. A unique fee is worse than a common one: it isolates you.
+**Logical actions**, per the spec: `max(nSpends, nOutputs)` for Sapling, `nActions` for Orchard and
+Ironwood (an action pairs one spend with one output), and a size-based transparent term. The analyzer
+approximates the transparent term with `max(vin, vout)` because it does not carry script sizes.
+
+**Why it leaks.** Wallets hard-code fee policies. A fee that matches a peculiar action count, or a
+round 100,000, groups every transaction that shares it into one software cohort. A unique fee is worse
+than a common one: it isolates you.
 
 **Rating.** `medium` + high confidence when the fee is a round number (`fee % 10_000 == 0`),
 `low` otherwise. Paying exactly the ZIP 317 floor is silence.
 
-**False positives.** Fee sniping and deliberate overpayment exist, but they are rare enough to
-report.
+**Validated against mainnet.** The first version counted spends + outputs and was therefore 2× too
+high: it claimed every 2-action mainnet transfer was underpaying. Real transactions showed the
+true convention — 2 actions → 10,000 zats, 3 actions + one transparent output → 20,000, 9 actions →
+45,000 — and the formula was corrected to the spec's `max(spends, outputs)`.
 
 **Fix.** Pay exactly `5,000 × max(grace_actions, logical_actions)` zats. Do not randomise upward.
 

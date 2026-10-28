@@ -71,12 +71,18 @@ enum Cmd {
         /// Output of `getrawtransaction <txid> 1`, or an array of them.
         #[arg(long, group = "src")]
         decoded: Option<PathBuf>,
+        /// Raw transaction hex (`getrawtransaction <txid> 0`), parsed with librustzcash.
+        #[arg(long, group = "src")]
+        raw: Option<PathBuf>,
         /// Local node RPC endpoint, e.g. http://127.0.0.1:18232
         #[arg(long, group = "src")]
         rpc: Option<String>,
         /// Transaction id to fetch from --rpc.
         #[arg(long, requires = "rpc")]
         txid: Option<String>,
+        /// Block height, when it can't be read from the source (raw hex).
+        #[arg(long)]
+        height: Option<u64>,
         /// Wallet-side facts to attach (enables the wallet rules).
         #[arg(long)]
         wallet: Option<PathBuf>,
@@ -211,15 +217,17 @@ fn run(cli: Cli) -> Result<()> {
         Cmd::Scan {
             fixture,
             decoded,
+            raw,
             rpc,
             txid,
+            height,
             wallet,
             peers,
             label,
             out,
             json,
         } => scan(
-            fixture, decoded, rpc, txid, wallet, peers, label, out, json, quiet,
+            fixture, decoded, raw, rpc, txid, height, wallet, peers, label, out, json, quiet,
         ),
         Cmd::Peers {
             rpc,
@@ -403,8 +411,10 @@ fn emit(report: &Report, out: Option<&Path>, json: bool, quiet: bool) -> Result<
 fn scan(
     fixture: Option<PathBuf>,
     decoded: Option<PathBuf>,
+    raw: Option<PathBuf>,
     rpc: Option<String>,
     txid: Option<String>,
+    height: Option<u64>,
     wallet: Option<PathBuf>,
     peers: Option<PathBuf>,
     label: Option<String>,
@@ -414,6 +424,20 @@ fn scan(
 ) -> Result<()> {
     let mut subject = if let Some(path) = fixture {
         fixtures::load_subject(&path)?
+    } else if let Some(path) = raw {
+        let hex = std::fs::read_to_string(&path)
+            .with_context(|| format!("cannot read {}", path.display()))?;
+        let mut facts = leakbench_chain::tx_from_hex(&hex).map_err(|e| anyhow::anyhow!("{e}"))?;
+        if let Some(height) = height {
+            facts.block_height = Some(height);
+        }
+        let mut s = Subject::new(
+            label.unwrap_or_else(|| format!("tx {}", short(&facts.txid))),
+            SubjectKind::Transaction,
+            "main",
+        );
+        s.txs.push(facts);
+        s
     } else if let Some(path) = decoded {
         subject_from_decoded(&path, label.as_deref())?
     } else if let Some(url) = rpc {
@@ -433,7 +457,9 @@ fn scan(
         s.context.tip_height = client.block_count().ok();
         s
     } else {
-        bail!("give me facts: --fixture <json>, --decoded <json>, or --rpc <url> --txid <id>");
+        bail!(
+            "give me facts: --fixture <json>, --decoded <json>, --raw <hex>, or --rpc <url> --txid <id>"
+        );
     };
 
     if let Some(path) = wallet {

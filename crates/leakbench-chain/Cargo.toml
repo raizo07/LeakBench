@@ -6,8 +6,15 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 
+[features]
+default = ["raw"]
+# Parse raw transaction bytes with the reference implementation (librustzcash).
+raw = ["dep:zcash_primitives", "dep:zcash_protocol"]
+
 [dependencies]
 leakbench-core = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
+zcash_primitives = { workspace = true, optional = true }
+zcash_protocol = { workspace = true, optional = true }

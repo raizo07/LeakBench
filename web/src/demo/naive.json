@@ -26,13 +26,13 @@
     "value": 0,
     "grade": "F",
     "verdict": "disqualified",
-    "risk_points": 273.1,
+    "risk_points": 262.5,
     "by_severity": {
       "critical": 2,
       "high": 7,
       "info": 0,
       "low": 2,
-      "medium": 12
+      "medium": 9
     }
   },
   "findings": [
@@ -407,126 +407,12 @@
         },
         {
           "label": "txid",
-          "value": "14493338086286b390f0cc071b158ba17d55c8cd4d54659536bb0ce4bf9bd451"
-        }
-      ],
-      "remediation": "Pay exactly the ZIP 317 conventional fee. Do not randomise fees upward to look unusual: a unique fee is a better fingerprint than a common one, because it isolates you.",
-      "txids": [
-        "14493338086286b390f0cc071b158ba17d55c8cd4d54659536bb0ce4bf9bd451"
-      ],
-      "references": [
-        "https://zips.z.cash/zip-0317"
-      ]
-    },
-    {
-      "id": "LB-004",
-      "title": "Fee fingerprint",
-      "severity": "medium",
-      "confidence": "high",
-      "category": "fingerprint",
-      "fatal": false,
-      "summary": "The fee is 10,000 zats but the ZIP 317 conventional fee for 6 logical action(s) is 30,000 zats. It is also a round number, which is itself uncommon and memorable. A non-conventional fee is a software fingerprint: transactions sharing it are likely to come from the same wallet build.",
-      "evidence": [
-        {
-          "label": "fee",
-          "value": "10,000 zats"
-        },
-        {
-          "label": "zip-317 floor",
-          "value": "30,000 zats"
-        },
-        {
-          "label": "difference",
-          "value": "-20000 zats"
-        },
-        {
-          "label": "logical actions",
-          "value": "6"
-        },
-        {
-          "label": "txid",
           "value": "30cc9acb8b1b2c500ef5754112486810bc7e74bb7e94d2bd6b64019bb22d1d59"
         }
       ],
       "remediation": "Pay exactly the ZIP 317 conventional fee. Do not randomise fees upward to look unusual: a unique fee is a better fingerprint than a common one, because it isolates you.",
       "txids": [
         "30cc9acb8b1b2c500ef5754112486810bc7e74bb7e94d2bd6b64019bb22d1d59"
-      ],
-      "references": [
-        "https://zips.z.cash/zip-0317"
-      ]
-    },
-    {
-      "id": "LB-004",
-      "title": "Fee fingerprint",
-      "severity": "medium",
-      "confidence": "high",
-      "category": "fingerprint",
-      "fatal": false,
-      "summary": "The fee is 10,000 zats but the ZIP 317 conventional fee for 4 logical action(s) is 20,000 zats. It is also a round number, which is itself uncommon and memorable. A non-conventional fee is a software fingerprint: transactions sharing it are likely to come from the same wallet build.",
-      "evidence": [
-        {
-          "label": "fee",
-          "value": "10,000 zats"
-        },
-        {
-          "label": "zip-317 floor",
-          "value": "20,000 zats"
-        },
-        {
-          "label": "difference",
-          "value": "-10000 zats"
-        },
-        {
-          "label": "logical actions",
-          "value": "4"
-        },
-        {
-          "label": "txid",
-          "value": "38c835d7f51a1f10596e0e0a75a431ced083ff80b467bdd4d02646f47e46f2c4"
-        }
-      ],
-      "remediation": "Pay exactly the ZIP 317 conventional fee. Do not randomise fees upward to look unusual: a unique fee is a better fingerprint than a common one, because it isolates you.",
-      "txids": [
-        "38c835d7f51a1f10596e0e0a75a431ced083ff80b467bdd4d02646f47e46f2c4"
-      ],
-      "references": [
-        "https://zips.z.cash/zip-0317"
-      ]
-    },
-    {
-      "id": "LB-004",
-      "title": "Fee fingerprint",
-      "severity": "medium",
-      "confidence": "high",
-      "category": "fingerprint",
-      "fatal": false,
-      "summary": "The fee is 10,000 zats but the ZIP 317 conventional fee for 3 logical action(s) is 15,000 zats. It is also a round number, which is itself uncommon and memorable. A non-conventional fee is a software fingerprint: transactions sharing it are likely to come from the same wallet build.",
-      "evidence": [
-        {
-          "label": "fee",
-          "value": "10,000 zats"
-        },
-        {
-          "label": "zip-317 floor",
-          "value": "15,000 zats"
-        },
-        {
-          "label": "difference",
-          "value": "-5000 zats"
-        },
-        {
-          "label": "logical actions",
-          "value": "3"
-        },
-        {
-          "label": "txid",
-          "value": "7aa7f742f8609012ddcbcfd34eeed319f7eaa3da44f305ef4c95d16659357463"
-        }
-      ],
-      "remediation": "Pay exactly the ZIP 317 conventional fee. Do not randomise fees upward to look unusual: a unique fee is a better fingerprint than a common one, because it isolates you.",
-      "txids": [
-        "7aa7f742f8609012ddcbcfd34eeed319f7eaa3da44f305ef4c95d16659357463"
       ],
       "references": [
         "https://zips.z.cash/zip-0317"
@@ -833,7 +719,7 @@
         "version": 6,
         "block_height": 3500000,
         "block_time": 1790553600,
-        "fee_zat": 20000,
+        "fee_zat": 10000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -845,7 +731,7 @@
         "orchard": {
           "spends": 2,
           "outputs": 2,
-          "value_balance_zat": 20000
+          "value_balance_zat": 10000
         },
         "ironwood": {
           "spends": 0,
@@ -860,7 +746,7 @@
         "version": 6,
         "block_height": 3500040,
         "block_time": 1790556600,
-        "fee_zat": 20000,
+        "fee_zat": 10000,
         "transparent": {
           "spends": 0,
           "outputs": 0
@@ -872,7 +758,7 @@
         "orchard": {
           "spends": 2,
           "outputs": 2,
-          "value_balance_zat": 20000
+          "value_balance_zat": 10000
         },
         "ironwood": {
           "spends": 0,
@@ -943,7 +829,7 @@
         "version": 6,
         "block_height": 3500043,
         "block_time": 1790556825,
-        "fee_zat": 15000,
+        "fee_zat": 10000,
         "transparent": {
           "spends": 0,
           "outputs": 1,
@@ -964,7 +850,7 @@
         "ironwood": {
           "spends": 1,
           "outputs": 1,
-          "value_balance_zat": 100015000
+          "value_balance_zat": 100010000
         },
         "anchor_age_blocks": 2,
         "label": "exchange deposit",

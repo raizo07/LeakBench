@@ -1,0 +1,41 @@
+{
+ "label": "unshield-ddd1dbe5",
+ "kind": "transaction",
+ "network": "main",
+ "description": "Real Ironwood to transparent unshielding: 132,000 zats paid to a transparent output, 20,000 fee. block 3533276, txid ddd1dbe52211888a268bb539062bf14e6280320669bbbd4d4c59a9234eb4c84f",
+ "context": {
+  "block_interval_secs": 75,
+  "tip_height": 3533276
+ },
+ "txs": [
+  {
+   "txid": "ddd1dbe52211888a268bb539062bf14e6280320669bbbd4d4c59a9234eb4c84f",
+   "version": 6,
+   "block_height": 3533276,
+   "fee_zat": 20000,
+   "transparent": {
+    "spends": 0,
+    "outputs": 1,
+    "value_in_zat": 0,
+    "value_out_zat": 132000
+   },
+   "sapling": {
+    "spends": 0,
+    "outputs": 0
+   },
+   "orchard": {
+    "spends": 0,
+    "outputs": 0
+   },
+   "ironwood": {
+    "spends": 3,
+    "outputs": 3,
+    "value_balance_zat": 152000
+   },
+   "expiry_height": 3533281,
+   "lock_time": 0,
+   "source": "raw"
+  }
+ ],
+ "peers": []
+}

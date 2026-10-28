@@ -1,0 +1,41 @@
+{
+ "label": "round-unshield-776edbb3",
+ "kind": "transaction",
+ "network": "main",
+ "description": "Real unshielding of exactly 8 ZEC from a 3-action Ironwood bundle: a round, public amount. block 3533278, txid 776edbb3e57b09de6ae9695346b9256f6949ed74b6fc60f5ff180e8faaf1ee71",
+ "context": {
+  "block_interval_secs": 75,
+  "tip_height": 3533278
+ },
+ "txs": [
+  {
+   "txid": "776edbb3e57b09de6ae9695346b9256f6949ed74b6fc60f5ff180e8faaf1ee71",
+   "version": 6,
+   "block_height": 3533278,
+   "fee_zat": 20000,
+   "transparent": {
+    "spends": 0,
+    "outputs": 1,
+    "value_in_zat": 0,
+    "value_out_zat": 8000000000
+   },
+   "sapling": {
+    "spends": 0,
+    "outputs": 0
+   },
+   "orchard": {
+    "spends": 0,
+    "outputs": 0
+   },
+   "ironwood": {
+    "spends": 3,
+    "outputs": 3,
+    "value_balance_zat": 8000020000
+   },
+   "expiry_height": 3533314,
+   "lock_time": 0,
+   "source": "raw"
+  }
+ ],
+ "peers": []
+}

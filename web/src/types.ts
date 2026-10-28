@@ -54,7 +54,7 @@ export interface TxFacts {
   expiry_height?: number | null;
   anchor_age_blocks?: number | null;
   label?: string | null;
-  source: 'fixture' | 'rpc' | 'simulated' | 'manual';
+  source: 'fixture' | 'rpc' | 'raw' | 'simulated' | 'manual';
 }
 
 export interface WalletFacts {

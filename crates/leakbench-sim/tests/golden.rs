@@ -23,7 +23,7 @@ fn naive_scenario_is_pinned() {
     assert_eq!(report.verdict, Verdict::Disqualified);
     assert_eq!(report.score.value, 0);
     assert_eq!(report.score.grade, "F");
-    assert_eq!(report.findings.len(), 23);
+    assert_eq!(report.findings.len(), 20);
 
     let fatal: Vec<&str> = report
         .findings
@@ -37,7 +37,7 @@ fn naive_scenario_is_pinned() {
         ("LB-001", 1),
         ("LB-002", 1),
         ("LB-003", 1),
-        ("LB-004", 4),
+        ("LB-004", 1),
         ("LB-006", 1),
         ("LB-007", 1),
         ("LB-008", 1),

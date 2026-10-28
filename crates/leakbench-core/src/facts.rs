@@ -209,19 +209,21 @@ impl TxFacts {
         }
     }
 
-    /// ZIP 317 "logical actions": one unit per spend and per output, across
-    /// every pool (transparent included), floored at the grace allowance of 2.
+    /// ZIP 317 logical actions, floored at the grace allowance of 2.
+    ///
+    /// The spec counts, per pool: `max(nSpends, nOutputs)` for Sapling, and
+    /// `nActions` for Orchard and Ironwood (an action pairs one spend with one
+    /// output). Transparent contributes `max(ceil(in_size/150), ceil(out_size/34))`;
+    /// we only carry counts, so `max(vin, vout)` approximates it and says so.
+    ///
+    /// Verified against mainnet: a 2-action transfer pays 10,000 zats, and a
+    /// 3-action transfer with one transparent output pays 20,000.
     pub fn logical_actions(&self) -> u32 {
-        let total: u32 = [
-            Pool::Transparent,
-            Pool::Sapling,
-            Pool::Orchard,
-            Pool::Ironwood,
-        ]
-        .into_iter()
-        .map(|p| self.pool(p).action_count())
-        .sum();
-        total.max(2)
+        let sapling = self.sapling.spends.max(self.sapling.outputs);
+        let orchard = self.orchard.spends.max(self.orchard.outputs);
+        let ironwood = self.ironwood.spends.max(self.ironwood.outputs);
+        let transparent = self.transparent.spends.max(self.transparent.outputs);
+        (sapling + orchard + ironwood + transparent).max(2)
     }
 
     /// The ZIP 317 conventional fee floor: 5,000 zats per logical action.
@@ -268,6 +270,8 @@ impl TxFacts {
 pub enum Source {
     Fixture,
     Rpc,
+    /// Parsed from raw transaction bytes with the reference implementation.
+    Raw,
     Simulated,
     #[default]
     Manual,
@@ -278,6 +282,7 @@ impl Source {
         match self {
             Source::Fixture => "fixture",
             Source::Rpc => "rpc",
+            Source::Raw => "raw",
             Source::Simulated => "simulated",
             Source::Manual => "manual",
         }
@@ -591,9 +596,20 @@ mod tests {
         };
         assert_eq!(tx.logical_actions(), 2);
         assert_eq!(tx.zip317_floor_zat(), 10_000);
+        // Orchard counts actions: 2 spends / 3 outputs is three logical actions.
         tx.orchard = pool(2, 3, 0);
-        assert_eq!(tx.logical_actions(), 5);
-        assert_eq!(tx.zip317_floor_zat(), 25_000);
+        assert_eq!(tx.logical_actions(), 3);
+        assert_eq!(tx.zip317_floor_zat(), 15_000);
+        // 3 Ironwood actions + one transparent output is four (verified on mainnet).
+        tx.orchard = PoolFacts::default();
+        tx.ironwood = pool(3, 3, 0);
+        tx.transparent = PoolFacts {
+            spends: 0,
+            outputs: 1,
+            ..Default::default()
+        };
+        assert_eq!(tx.logical_actions(), 4);
+        assert_eq!(tx.zip317_floor_zat(), 20_000);
     }
 
     #[test]

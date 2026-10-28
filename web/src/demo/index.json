@@ -6,12 +6,12 @@
         "high": 7,
         "info": 0,
         "low": 2,
-        "medium": 12
+        "medium": 9
       },
       "description": "A wallet that moved its whole Orchard balance across the turnstile in one transaction, one block after being paid, then unshielded to an exchange.",
       "fatal": 2,
       "file": "naive.json",
-      "findings": 23,
+      "findings": 20,
       "generated_at": "2026-10-27T00:00:00Z",
       "grade": "F",
       "id": "naive",

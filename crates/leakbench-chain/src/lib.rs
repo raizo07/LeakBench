@@ -18,11 +18,15 @@ pub mod decode;
 pub mod devnet;
 pub mod fixtures;
 pub mod peers;
+#[cfg(feature = "raw")]
+pub mod rawtx;
 pub mod rpc;
 
 pub use decode::tx_from_node_json;
 pub use fixtures::{load_subject, load_wallet, merge_wallet};
 pub use peers::{collect as collect_peers, BlockSource, PeerSet};
+#[cfg(feature = "raw")]
+pub use rawtx::{tx_from_bytes, tx_from_hex};
 pub use rpc::Rpc;
 
 #[derive(Debug, thiserror::Error)]

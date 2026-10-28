@@ -37,9 +37,12 @@ both the picture and the score, so every hit you see is a hit you hear. Rebuild 
 ## The short version
 
 ```
-naive wallet       0 / 100   F   disqualified    2 fatal, 24 findings
-hardened wallet   79 / 100   B   acceptable      0 fatal,  5 findings
+naive wallet       0 / 100   F   disqualified    2 fatal, 20 findings   (simulated)
+hardened wallet   79 / 100   B   acceptable      0 fatal,  5 findings   (simulated)
 ```
+
+Both of those are **simulated** subjects — a deterministic A/B that cannot exist on chain. The
+analyzer itself is exercised against **real mainnet transactions**: see [Real data](#real-data).
 
 Same starting position: an Orchard balance received from payroll. The naive wallet crosses the
 turnstile once, one block after being paid, for its whole balance, then unshields to an exchange.
@@ -156,6 +159,37 @@ leakbench scan --fixture subject.json --wallet wallet.json
 ```
 
 Keep `wallet.json` local: reports contain txids and amounts, wallet exports contain your history.
+
+---
+
+## Real data
+
+Three mainnet transactions are committed as fixtures, with the raw hex they came from
+([provenance](fixtures/mainnet/PROVENANCE.md)):
+
+```
+crossing-986cfd40         Orchard→Ironwood crossing    LB-001 fatal   35/100
+unshield-ddd1dbe5         Ironwood→transparent         LB-003 fatal   30/100
+round-unshield-776edbb3   8 ZEC unshielded             LB-003, LB-009 22/100
+```
+
+They are parsed with `zcash_primitives` — the reference implementation — not with a hand-rolled
+decoder, and the tests assert three things: the parser reproduces the committed facts, the numbers
+satisfy the consensus value equation (`Σ shielded balances − transparent out == fee`), and the
+expected findings come out.
+
+```bash
+cargo run -p leakbench-cli -- scan --raw fixtures/mainnet/crossing-986cfd40.hex --height 3533241
+```
+
+**Real data caught a real bug.** Every 2-action transaction on mainnet pays a 10,000-zat fee; the
+analyzer's ZIP 317 floor said 20,000, because it counted spends + outputs instead of the spec's
+`max(spends, outputs)` per pool. The formula is fixed, and it now reproduces mainnet fees exactly:
+2 actions → 10,000, 3 actions + one transparent output → 20,000, 9 actions → 45,000.
+
+What real data does **not** fix: the naive-vs-hardened comparison. There is no on-chain pair of
+wallets holding the same balance and behaving differently — that is a designed A/B, and it stays
+labelled `simulated` in every report and in the UI header.
 
 ---
 
