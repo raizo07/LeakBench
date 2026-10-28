@@ -6,10 +6,3 @@ web/node_modules/
 web/dist/assets/
 web/.chrome*/
 web/shot*.png
-
-# film
-film/node_modules/
-film/.npm-cache/
-film/frames/
-film/audio/*.wav
-film/out/*.png
